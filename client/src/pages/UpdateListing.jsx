@@ -28,7 +28,7 @@ export default function UpdateListing() {
 
   const { currentUser } = useSelector((state) => state.user);
 
-
+  // 🧠 Handle input change
   const handleChange = (e) => {
     const { id, value, type, checked } = e.target;
     if (id === "sale" || id === "rent") {
