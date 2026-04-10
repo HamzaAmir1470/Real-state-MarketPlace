@@ -1,29 +1,30 @@
-import { set } from "mongoose";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function CreateListing() {
+const initialFormData = {
+  imageUrls: [],
+  name: "",
+  description: "",
+  address: "",
+  type: "rent",
+  bedrooms: 1,
+  bathrooms: 1,
+  regularPrice: 0,
+  discountPrice: 0,
+  offer: false,
+  parking: false,
+  furnished: false,
+};
+
+export default function UpdateListing() {
   const [files, setFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
   const params = useParams();
-  const [formData, setFormData] = useState({
-    imageUrls: [],
-    name: "",
-    description: "",
-    address: "",
-    type: "rent",
-    bedrooms: 1,
-    bathrooms: 1,
-    regularPrice: 0,
-    discountPrice: 0,
-    offer: false,
-    parking: false,
-    furnished: false,
-  });
+  const [formData, setFormData] = useState(initialFormData);
 
   const { currentUser } = useSelector((state) => state.user);
 
@@ -78,13 +79,7 @@ export default function CreateListing() {
           return;
         }
 
-        // If backend returns data directly, not nested inside "data"
         const listingData = data.data || data;
-
-        // Validate it has expected structure
-        if (!listingData.name) {
-          console.warn("⚠️ Listing data missing expected fields:", listingData);
-        }
 
         setFormData((prev) => ({
           ...prev,
@@ -160,33 +155,17 @@ export default function CreateListing() {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Failed to create listing");
+      if (!res.ok) throw new Error(data.message || "Failed to update listing");
 
-      setMessage("✅ Listing created successfully!");
+      setMessage("✅ Listing updated successfully!");
 
-
-      // Reset form
-      setFormData({
-        imageUrls: [],
-        name: "",
-        description: "",
-        address: "",
-        type: "rent",
-        bedrooms: 1,
-        bathrooms: 1,
-        regularPrice: 0,
-        discountPrice: 0,
-        offer: false,
-        parking: false,
-        furnished: false,
-      });
       const listingId = data?.data?._id || data?._id;
       if (!listingId) throw new Error("Invalid listing ID returned from backend");
 
       navigate(`/listing/${listingId}`);
 
     } catch (err) {
-      console.error("❌ Error creating listing:", err);
+      console.error("❌ Error updating listing:", err);
       setMessage("❌ " + err.message);
     } finally {
       setLoading(false);
@@ -395,7 +374,7 @@ export default function CreateListing() {
               }`}
           >
             {loading
-              ? "Creating..."
+              ? "Updating..."
               : uploading
                 ? "Uploading..."
                 : "Update Listing"}
