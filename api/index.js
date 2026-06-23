@@ -16,9 +16,9 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "https://real-state-market-place-4lxi.vercel.app", // Your Vercel domain
-      "http://localhost:5173",                          // Vite local development
-      "http://localhost:3000"                           // Alternative local port
+      "https://sultan-estate-backend.vercel.app/", 
+      "http://localhost:5173",                         
+      "http://localhost:3000"                          
     ],
     credentials: true, // Allows cookies to be passed across origins
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
