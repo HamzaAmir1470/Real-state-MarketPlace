@@ -29,24 +29,28 @@ export default function Listing() {
     const fetchListing = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`${process.env.BACKEND_URL}/api/listing/get/${params.listingId}`);
+
+        const res = await fetch(
+          `${import.meta.env.VITE_BACKEND_URL}/api/listing/get/${params.listingId}`
+        );
+
         const data = await res.json();
 
         if (data.success === false) {
           setError(true);
-          setLoading(false);
           return;
         }
 
         setListing(data);
-        setLoading(false);
         setError(false);
       } catch (error) {
-        console.error('Fetch error:', error);
+        console.error(error);
         setError(true);
+      } finally {
         setLoading(false);
       }
     };
+
     fetchListing();
   }, [params.listingId]);
 
