@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function CreateListing() {
+export default function UpdateListing() {
   const [files, setFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -159,9 +159,9 @@ export default function CreateListing() {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Failed to create listing");
+      if (!res.ok) throw new Error(data.message || "Failed to update listing");
 
-      setMessage("✅ Listing created successfully!");
+      setMessage("✅ Listing updated successfully!");
 
 
       // Reset form
