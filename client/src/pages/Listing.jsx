@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperCore from 'swiper';
 import { useSelector } from 'react-redux';
-import { Navigation } from 'swiper/modules';
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css/bundle';
 import {
   FaBath,
@@ -16,7 +16,7 @@ import {
 import Contact from '../components/Contact';
 
 export default function Listing() {
-  SwiperCore.use([Navigation]);
+  SwiperCore.use([Navigation, Pagination, Autoplay]);
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -38,7 +38,6 @@ export default function Listing() {
           return;
         }
 
-        // ✅ Fix: store actual listing object, not the wrapper
         setListing(data);
         setLoading(false);
         setError(false);
@@ -51,8 +50,6 @@ export default function Listing() {
     fetchListing();
   }, [params.listingId]);
 
- 
-
   return (
     <main>
       {loading && <p className='text-center my-7 text-2xl'>Loading...</p>}
@@ -64,16 +61,31 @@ export default function Listing() {
 
       {listing && !loading && !error && (
         <div>
-          <Swiper navigation>
+          <Swiper
+            navigation
+            pagination={{
+              clickable: true,
+              dynamicBullets: true
+            }}
+            autoplay={{
+              delay: 4000,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
+            }}
+            loop={true}
+            speed={800}
+            className='listing-swiper'
+          >
             {listing.imageUrls.map((url) => (
               <SwiperSlide key={url}>
-                <div
-                  className='h-[550px]'
-                  style={{
-                    background: `url(${url}) center no-repeat`,
-                    backgroundSize: 'cover',
-                  }}
-                ></div>
+                <div className='relative w-full h-[550px]'>
+                  <img
+                    src={url}
+                    alt='Property'
+                    className='w-full h-full object-cover'
+                    loading='lazy'
+                  />
+                </div>
               </SwiperSlide>
             ))}
           </Swiper>
@@ -150,9 +162,7 @@ export default function Listing() {
             </ul>
 
             {/* Contact landlord button */}
-            {/* listing.userRef !== currentUser._id && */}
             {currentUser &&
-              
               !contact && (
                 <button
                   onClick={() => setContact(true)}
@@ -166,6 +176,49 @@ export default function Listing() {
           </div>
         </div>
       )}
+
+      {/* Add custom styles for better pagination */}
+      <style jsx>{`
+        .listing-swiper .swiper-pagination-bullet {
+          background: white;
+          opacity: 0.7;
+          width: 12px;
+          height: 12px;
+        }
+        
+        .listing-swiper .swiper-pagination-bullet-active {
+          background: white;
+          opacity: 1;
+          width: 30px;
+          border-radius: 6px;
+        }
+        
+        .listing-swiper .swiper-pagination {
+          bottom: 20px;
+        }
+        
+        .listing-swiper .swiper-button-next,
+        .listing-swiper .swiper-button-prev {
+          color: white;
+          background: rgba(0, 0, 0, 0.5);
+          width: 44px;
+          height: 44px;
+          border-radius: 50%;
+          transition: all 0.3s ease;
+        }
+        
+        .listing-swiper .swiper-button-next:hover,
+        .listing-swiper .swiper-button-prev:hover {
+          background: rgba(0, 0, 0, 0.8);
+          transform: scale(1.1);
+        }
+        
+        .listing-swiper .swiper-button-next::after,
+        .listing-swiper .swiper-button-prev::after {
+          font-size: 18px;
+          font-weight: bold;
+        }
+      `}</style>
     </main>
   );
 }
