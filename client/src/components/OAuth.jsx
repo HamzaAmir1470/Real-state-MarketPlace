@@ -31,7 +31,7 @@ export default function OAuth() {
             dispatch(signInSuccess(data));
             navigate('/');
         } catch (error) {
-            console.log("Could not authorize with google")
+            console.log(error, "Could not authorize with google")
         }
     }
 

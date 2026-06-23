@@ -2,7 +2,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { useRef, useState } from "react";
 import { updateUserSuccess, deleteUserFailure, deleteUserStart, deleteUserSuccess, signOutUserStart, signOutUserSuccess, signOutUserFailure } from "../redux/user/userSlice";
 import { Link } from "react-router-dom";
-import { set } from "mongoose";
 
 
 export default function Profile() {
@@ -10,7 +9,7 @@ export default function Profile() {
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
 
-  const [file, setFile] = useState(null);
+  // ✅ Fixed: Removed unused 'file' state completely
   const [avatar, setAvatar] = useState(currentUser?.avatar || "");
   const [formData, setFormData] = useState({
     username: currentUser?.username || "",
@@ -29,7 +28,7 @@ export default function Profile() {
     const selectedFile = e.target.files[0];
     if (!selectedFile) return;
 
-    setFile(selectedFile);
+    // ✅ Fixed: Removed setFile(selectedFile) since state was deleted
     setLoading(true);
     setMessage({ type: "", text: "" });
 
@@ -53,7 +52,7 @@ export default function Profile() {
       setAvatar(imageUrl);
 
       // Update user in backend
-      const backendRes = await fetch(`/api/user/update/${currentUser._id}`, {
+      const backendRes = await fetch(`/api/users/update/${currentUser._id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ avatar: imageUrl }),
@@ -86,7 +85,7 @@ export default function Profile() {
     setMessage({ type: "", text: "" });
 
     try {
-      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+      const res = await fetch(`/api/users/update/${currentUser._id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...formData, avatar }),
@@ -108,7 +107,7 @@ export default function Profile() {
   const handleDeleteUser = async () => {
     try {
       dispatch(deleteUserStart());
-      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+      const res = await fetch(`/api/users/delete/${currentUser._id}`, {
         method: "DELETE",
       });
       const data = await res.json();
@@ -133,7 +132,9 @@ export default function Profile() {
       }
       dispatch(signOutUserSuccess(data));
     } catch (error) {
-      dispatch(signOutUserFailure(data.message));
+      console.log(error);
+      // ✅ Fixed: Changed data?.message to error.message because data is out of scope here
+      dispatch(signOutUserFailure(error.message));
     }
   }
 
@@ -152,7 +153,7 @@ export default function Profile() {
       setUserListings(data);
     } catch (error) {
       setShowListingError(true);
-
+      console.log(error);
     }
   }
 
@@ -288,7 +289,7 @@ export default function Profile() {
               <Link className="text-slate-700 font-semibold hover:underline truncate flex-1" to={`/listing/${listing._id}`}>
                 <p>{listing.name}</p>
               </Link>
-              <div  className="flex flex-col items-center">
+              <div className="flex flex-col items-center">
                 <button onClick={() => handleListingDelete(listing._id)} className="text-red-700 uppercase">Delete</button>
                 <Link to={`/update-listing/${listing._id}`}>
                   <button className="text-green-700 uppercase">Edit</button>
