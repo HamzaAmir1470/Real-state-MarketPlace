@@ -1,14 +1,4 @@
 {
-  "dependencies": {
-    "bcryptjs": "^3.0.2",
-    "cloudinary": "^2.7.0",
-    "cookie-parser": "^1.4.7",
-    "dotenv": "^17.2.3",
-    "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.18.3",
-    "nodemon": "^3.1.10"
-  },
   "name": "mern-estate",
   "version": "1.0.0",
   "description": "",
@@ -20,9 +10,18 @@
     "start": "node api/index.js",
     "build": "npm install && npm install --prefix client && npm run build --prefix client"
   },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cloudinary": "^2.7.0",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.18.3",
+    "nodemon": "^3.1.10"
+  },
   "engines": {
-    "node": "18.x",
-    "npm": "9.x"
+    "node": "24.x"
   },
   "keywords": [],
   "author": "",
